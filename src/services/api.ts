@@ -5,7 +5,7 @@ import { PatientResponse } from '../types/patient';
 import { CreateSlotPayload, SlotResponse } from '../types/slot';
 import { DashboardResponse } from '../types/dashboard';
 
-const BASE_URL = 'https://7cvccltb-3100.inc1.devtunnels.ms/api';
+const BASE_URL = 'http://localhost:3100/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
