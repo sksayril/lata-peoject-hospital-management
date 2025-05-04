@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Loader2 } from 'lucide-react';
 import { createDoctor, getDoctors } from '../services/api';
 import { Doctor } from '../types/doctor';
 import toast from 'react-hot-toast';
@@ -14,13 +14,17 @@ const Doctors = () => {
     experience: 0,
     contact: '',
   });
+  const [loading, setLoading] = useState(true);
 
   const fetchDoctors = async () => {
+    setLoading(true);
     try {
       const response = await getDoctors();
       setDoctors(response.data[0].doctors);
     } catch (error) {
       toast.error('Failed to fetch doctors');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,8 +52,8 @@ const Doctors = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col h-full">
+      <div className="p-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Doctors</h1>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -58,25 +62,32 @@ const Doctors = () => {
           <Plus size={20} /> Add Doctor
         </button>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {doctors.map((doctor) => (
-          <div key={doctor.doctorId} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img
-              src={doctor.doctorImage}
-              alt={doctor.doctorName}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-800">{doctor.doctorName}</h3>
-              <p className="text-blue-800 font-medium">{doctor.specialization}</p>
-              <div className="mt-2 text-gray-600">
-                <p>Experience: {doctor.experience} years</p>
-                <p>Contact: {doctor.contact}</p>
-              </div>
-            </div>
+      <div className="flex-1 overflow-y-auto px-6 pb-6 bg-gray-50">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-16 h-16 text-indigo-500 animate-spin" />
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {doctors.map((doctor) => (
+              <div key={doctor.doctorId} className="bg-white rounded-lg shadow-md overflow-hidden transition transform hover:-translate-y-1 hover:shadow-lg">
+                <img
+                  src={doctor.doctorImage}
+                  alt={doctor.doctorName}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold text-gray-800">{doctor.doctorName}</h3>
+                  <p className="text-blue-800 font-medium">{doctor.specialization}</p>
+                  <div className="mt-2 text-gray-600">
+                    <p>Experience: {doctor.experience} years</p>
+                    <p>Contact: {doctor.contact}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {isModalOpen && (

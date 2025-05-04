@@ -3,6 +3,7 @@ import { SignUpPayload, SignInPayload, AuthResponse } from '../types/auth';
 import { CreateDoctorPayload, DoctorResponse } from '../types/doctor';
 import { PatientResponse } from '../types/patient';
 import { CreateSlotPayload, SlotResponse } from '../types/slot';
+import { DashboardResponse } from '../types/dashboard';
 
 const BASE_URL = 'https://7cvccltb-3100.inc1.devtunnels.ms/api';
 
@@ -51,5 +52,10 @@ export const createSlot = async (payload: CreateSlotPayload): Promise<void> => {
 
 export const getAllSlots = async (): Promise<SlotResponse> => {
   const response = await api.get('/get-all-slots');
+  return response.data;
+};
+
+export const getDashboard = async (): Promise<DashboardResponse> => {
+  const response = await api.get('/dashboard');
   return response.data;
 };

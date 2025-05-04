@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../services/api';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineLocationMarker, HiOutlinePhone, HiOutlinePhotograph } from 'react-icons/hi';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -26,73 +28,90 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md bg-opacity-90 backdrop-blur-lg">
         <h2 className="text-2xl font-bold text-blue-800 mb-6 text-center">Create Account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Hospital Name</label>
+          <div className="relative">
+            <label className="sr-only">Hospital Name</label>
+            <HiOutlineUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Hospital Name"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+          <div className="relative">
+            <label className="sr-only">Email</label>
+            <HiOutlineMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Email Address"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+          <div className="relative">
+            <label className="sr-only">Password</label>
+            <HiOutlineLockClosed className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Password"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Address</label>
+          <div className="relative">
+            <label className="sr-only">Address</label>
+            <HiOutlineLocationMarker className="absolute left-3 top-2 text-gray-400" size={20} />
             <textarea
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Address"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               rows={3}
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+          <div className="relative">
+            <label className="sr-only">Phone Number</label>
+            <HiOutlinePhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Phone Number"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Hospital Image URL</label>
+          <div className="relative">
+            <label className="sr-only">Hospital Image URL</label>
+            <HiOutlinePhotograph className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="url"
               value={formData.imageUrl}
               onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Image URL"
+              className="mt-1 block w-full pl-10 py-2 rounded-md border-none bg-gray-100 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-white focus:outline-none transition"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
           >
             Create Account
           </button>
@@ -104,7 +123,7 @@ const SignUp = () => {
           </Link>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

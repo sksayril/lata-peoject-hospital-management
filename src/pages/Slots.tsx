@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Calendar, Clock } from 'lucide-react';
+import { Plus, X, Calendar, Clock, Loader2 } from 'lucide-react';
 import { createSlot, getAllSlots, getDoctors } from '../services/api';
 import { DoctorSlot } from '../types/slot';
 import { Doctor } from '../types/doctor';
@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 const Slots = () => {
   const [slots, setSlots] = useState<DoctorSlot[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     date: '',
@@ -16,11 +17,14 @@ const Slots = () => {
   });
 
   const fetchSlots = async () => {
+    setLoading(true);
     try {
       const response = await getAllSlots();
       setSlots(response.slots);
     } catch (error) {
       toast.error('Failed to fetch slots');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,8 +82,8 @@ const Slots = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col h-full">
+      <div className="p-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Appointment Slots</h1>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -88,33 +92,40 @@ const Slots = () => {
           <Plus size={20} /> Create Slots
         </button>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {slots.map((slot) => (
-          <div key={slot._id} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="text-blue-800" size={20} />
-              <span className="font-semibold">{new Date(slot.date).toLocaleDateString()}</span>
-            </div>
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">{slot.doctorId.name}</h3>
-              <p className="text-blue-800">{slot.doctorId.specialization}</p>
-            </div>
-            <div className="space-y-2">
-              {slot.slots.map((timeSlot) => (
-                <div
-                  key={timeSlot._id}
-                  className="flex items-center gap-2 text-gray-600 bg-gray-50 p-2 rounded"
-                >
-                  <Clock size={16} />
-                  <span>
-                    {timeSlot.startTime} - {timeSlot.endTime}
-                  </span>
-                </div>
-              ))}
-            </div>
+      <div className="flex-1 overflow-y-auto px-6 pb-6 bg-gray-50">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-16 h-16 text-indigo-500 animate-spin" />
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {slots.map((slot) => (
+              <div key={slot._id} className="bg-white rounded-lg shadow-md p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Calendar className="text-blue-800" size={20} />
+                  <span className="font-semibold">{new Date(slot.date).toLocaleDateString()}</span>
+                </div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">{slot.doctorId.name}</h3>
+                  <p className="text-blue-800">{slot.doctorId.specialization}</p>
+                </div>
+                <div className="space-y-2">
+                  {slot.slots.map((timeSlot) => (
+                    <div
+                      key={timeSlot._id}
+                      className="flex items-center gap-2 text-gray-600 bg-gray-50 p-2 rounded"
+                    >
+                      <Clock size={16} />
+                      <span>
+                        {timeSlot.startTime} - {timeSlot.endTime}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {isModalOpen && (
