@@ -4,6 +4,7 @@ import { signIn } from '../services/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { HiOutlineMail, HiOutlineLockClosed } from 'react-icons/hi';
+import { Loader2 } from 'lucide-react';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ const SignIn = () => {
     email: '',
     password: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await signIn(formData);
       localStorage.setItem('token', response.data[0].token);
@@ -22,6 +25,8 @@ const SignIn = () => {
       navigate('/dashboard');
     } catch (error) {
       toast.error('Failed to sign in. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,9 +66,10 @@ const SignIn = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+            className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition-colors flex items-center justify-center"
+            disabled={loading}
           >
-            Sign In
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">

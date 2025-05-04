@@ -4,6 +4,7 @@ import { signUp } from '../services/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineLocationMarker, HiOutlinePhone, HiOutlinePhotograph } from 'react-icons/hi';
+import { Loader2 } from 'lucide-react';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -15,15 +16,19 @@ const SignUp = () => {
     phone: '',
     imageUrl: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await signUp(formData);
       toast.success('Account created successfully!');
       navigate('/signin');
     } catch (error) {
       toast.error('Failed to create account. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,9 +116,10 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+            className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition-colors flex items-center justify-center"
+            disabled={loading}
           >
-            Create Account
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">

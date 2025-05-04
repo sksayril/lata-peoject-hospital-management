@@ -1,32 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import UserProfile from '../components/UserProfile';
 import Doctors from './Doctors';
 import Patients from './Patients';
 import Slots from './Slots';
-import News from './News';
+import News from './News.tsx';
 import { getDashboard } from '../services/api';
 import { DashboardData } from '../types/dashboard';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
-import { Users, UserRound, TrendingUp } from 'lucide-react';
+import { Users, UserRound, TrendingUp, RefreshCw, Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
+  const location = useLocation();
+  const isRoot = location.pathname === '/dashboard' || location.pathname === '/dashboard/';
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // function to fetch dashboard data
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getDashboard();
+      setDashboardData(response.data);
+      setError('');
+    } catch (err) {
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getDashboard();
-        setDashboardData(response.data);
-      } catch (err) {
-        setError('Failed to load dashboard data.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -35,8 +41,24 @@ const Dashboard = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <div className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-end">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className={`flex items-center py-4 ${isRoot ? 'justify-between' : 'justify-end'}`}>
+              {isRoot && (
+                <button
+                  onClick={fetchData}
+                  disabled={loading}
+                  className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {loading ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : (
+                    <>
+                      <RefreshCw className="w-6 h-6" />
+                      <span>Get Your Latest Data</span>
+                    </>
+                  )}
+                </button>
+              )}
               <UserProfile />
             </div>
           </div>
